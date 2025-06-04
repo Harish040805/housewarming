@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Happy House Warming</title>
+  <style>
+    body {
+      margin: 0;
+      background-color: #fff;
+      font-family: Arial, sans-serif;
+    }
+    #canvas {
+      width: 99%;
+      height: 581.8px;
+      border: 1px solid black;
+    }
+ h1 {
+    font-size: 36px;
+    color: #ffd700; 
+    text-align: center;
+    margin-top: 20px;
+    margin-bottom: 10px;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 2px; 
+  }
+  p {
+    font-size: 18px;
+    color: #666;
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  h1 {
+    animation: fadeIn 4s ease-in;
+  }
+  @keyframes fadeIn {
+    0% {
+      opacity: 0;
+    }
+	20% {
+	  opacity: 0.2;
+	}
+    100% {
+      opacity: 1;
+    }
+  }
+  </style>
+</head>
+<body>
+
+
+
+
+<script>
+const iframe = document.createElement('iframe');
+iframe.style.position = 'fixed';
+iframe.style.top = '0';
+iframe.style.left = '0';
+iframe.style.width = '100%';
+iframe.style.height = '100%';
+iframe.style.zIndex = '9999';
+iframe.style.border = 'none';
+
+const iframeContent = `
+  <html>
+    <head>
+      <style>
+        button {
+          padding: 10px 20px; 
+          border: none; 
+          border-radius: 5px; 
+          background-color: #fcc200;
+          color: #000000; 
+          cursor: pointer;
+        }
+        button:hover {
+          background-color: gold;
+        }
+      </style>
+    </head>
+    <body style="font-family: Arial, sans-serif; background-color: #fff; text-align: center; margin-top: 20%;">
+<h1 style="color: gold; text-shadow: -1px 0 black, 0 1px black, 1px 0 orange, 0 -1px orange;">Happy House Warming</h1>
+      <button onclick="parent.document.body.removeChild(parent.document.querySelector('iframe'));"><p style="color: #fff;"> &nbsp; &nbsp; &nbsp; &nbsp; Enter &nbsp; &nbsp; &nbsp; &nbsp;</p></button>
+    </body>
+  </html>
+`;
+
+iframe.srcdoc = iframeContent;
+document.body.appendChild(iframe);
+</script>
+
+
+
+
+
+<center>
+  <h1>Happy House Warming</h1>
+  <p>
+  "Warmest Congratulations on Your New Home! May it be Filled with Love, Laughter & Happy Memories"
+  <br>
+  "Start Each of Your Day Fresh"
+  </p>
+</center>  
+  <center><div id="canvas"></div></center>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script>
+(function (HouseMod) {
+    var materials_default = {
+        base: new THREE.MeshStandardMaterial({
+            color: 0xffffff,
+            side: THREE.DoubleSide
+        }),
+        tri: new THREE.MeshStandardMaterial({
+            color: 0xaf0000,
+            side: THREE.DoubleSide
+        }),
+        roof: new THREE.MeshStandardMaterial({
+            color: 0x202020,
+            side: THREE.DoubleSide
+        })
+    };
+    var HouseTriangle = function(materials){
+        materials = materials || materials_default;
+        var geometry = new THREE.BufferGeometry();
+        var vertices = new Float32Array([
+                -1, 0, 0,
+                0.5, 1.5, 0,
+                2, 0, 0
+            ]);
+        geometry.setAttribute('position', new THREE.BufferAttribute(vertices, 3));
+        geometry.computeVertexNormals();
+        geometry.addGroup(0, 3, 0);
+        return new THREE.Mesh(
+            geometry, 
+            materials.tri);
+    };
+    HouseMod.create = function(materials){
+        materials = materials || materials_default;
+        var house = new THREE.Group();
+        var base = new THREE.Mesh(new THREE.BoxGeometry(3, 2, 4), materials.base);
+        house.add(base);
+        var tri1 = HouseTriangle(materials);
+        tri1.position.set(-0.5, 1 , 2);
+        house.add(tri1);
+        var tri2 = HouseTriangle(materials);
+        tri2.position.set(-0.5, 1 , -2);
+        house.add(tri2);
+        var roof1 = new THREE.Mesh(
+            new THREE.PlaneGeometry(2.84, 4.5), 
+            materials.roof);
+        roof1.position.set(-1, 1.51, 0);
+        roof1.rotation.set(Math.PI * 0.5, Math.PI * 0.25, 0);
+        house.add(roof1);
+        var roof2 = new THREE.Mesh(
+            new THREE.PlaneGeometry(2.84, 4.5), 
+            materials.roof);
+        roof2.position.set(1, 1.51, 0);
+        roof2.rotation.set(Math.PI * 0.5, Math.PI * -0.25, 0);
+        house.add(roof2);
+        house.castShadow = true;
+        house.receiveShadow = false;
+        return house;
+    };
+}(this['HouseMod'] = {}));
+
+var scene = new THREE.Scene();
+var camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+var renderer = new THREE.WebGLRenderer({
+  canvas: document.createElement('canvas'),
+  antialias: true
+});
+
+document.getElementById('canvas').appendChild(renderer.domElement);
+
+renderer.setSize(window.innerWidth, window.innerHeight);
+
+var house = HouseMod.create();
+scene.add(house);
+
+var groundGeometry = new THREE.PlaneGeometry(100, 100, 100, 100);
+var groundMaterial = new THREE.MeshStandardMaterial({
+  color: 0x3E8E41,
+  roughness: 0.8,
+  metalness: 0.2,
+  bumpScale: 0.05
+});
+var ground = new THREE.Mesh(groundGeometry, groundMaterial);
+ground.rotation.x = -Math.PI / 2;
+ground.position.y = -2;
+scene.add(ground);
+
+var sunGeometry = new THREE.SphereGeometry(2, 64, 64);
+var sunMaterial = new THREE.MeshBasicMaterial({ color: 0xFFD700 });
+var sun = new THREE.Mesh(sunGeometry, sunMaterial);
+sun.position.set(7, 7, -5);
+scene.add(sun);
+var sunLight = new THREE.PointLight(0xFF9900, 1, 100);
+sunLight.position.copy(sun.position);
+scene.add(sunLight);
+
+sun.rotation.y += 0.001;
+sunLight.position.copy(sun.position);
+
+camera.position.z = 8;
+scene.background = new THREE.Color(0x66d3fa);
+
+var ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+scene.add(ambientLight);
+var pointLight = new THREE.PointLight(0xffffff, 1);
+pointLight.position.set(0, 5, 5);
+scene.add(pointLight);
+
+var sunAngle = 0;
+
+function animate() {
+  requestAnimationFrame(animate);
+  house.rotation.y += 0.005;
+  
+  sunAngle += 0.01;
+  sun.position.x = 7 * Math.cos(sunAngle);
+  sun.position.z = 7 * Math.sin(sunAngle);
+  sun.position.y = 7;
+  
+  sunLight.position.copy(sun.position);
+  
+  renderer.setSize(document.getElementById('canvas').offsetWidth, document.getElementById('canvas').offsetHeight);
+  camera.aspect = document.getElementById('canvas').offsetWidth / document.getElementById('canvas').offsetHeight;
+  camera.updateProjectionMatrix();
+  renderer.render(scene, camera);
+}
+animate();
+</script>
+</body>
+</html>
