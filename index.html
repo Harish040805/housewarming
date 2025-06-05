@@ -34,6 +34,9 @@
   h1 {
     animation: fadeIn 4s ease-in;
   }
+.dodo {
+	animation: fadeIn 4s ease-in;
+}
   @keyframes fadeIn {
     0% {
       opacity: 0;
@@ -77,10 +80,13 @@ const iframeContent = `
         button:hover {
           background-color: gold;
         }
+	.dodo {
+	animation: fadeIn 4s ease-in;
+        }
       </style>
     </head>
     <body style="font-family: Arial, sans-serif; background-color: #cc338b; text-align: center; margin-top: 20%;">
-<h1 style="color: gold; text-shadow: -1px 0 black, 0 1px black, 1px 0 orange, 0 -1px orange;">Happy House Warming<br>MUKESH UNCLE</h1>
+<h1 class="dodo;" style="color: gold; text-shadow: -1px 0 black, 0 1px black, 1px 0 orange, 0 -1px orange;">Happy House Warming<br>MUKESH UNCLE</h1>
       <button onclick="parent.document.body.removeChild(parent.document.querySelector('iframe'));"><p style="color: #fff;"> &nbsp; &nbsp; &nbsp; &nbsp; Enter &nbsp; &nbsp; &nbsp; &nbsp;</p></button>
     </body>
   </html>
